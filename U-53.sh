@@ -30,24 +30,17 @@ TMP1=`SCRIPTNAME`.log
 
 > $TMP1
 
-# Prompt for username
-read -p "Enter username: " username
 
-# Check if user exists
-if ! grep -q $username /etc/passwd; then
-  WARN "user does not exist"
-else
-  OK "user exists"
-  # Get the original shell for the user
-  original_shell=$(grep $username /etc/passwd | cut -d: -f7)
-  # Change user's shell back to the original shell
-  usermod -s $original_shell $username
-  OK "Original shell for the user restored"
-fi
+# Read the original shells of the users from the log file
+while read -r line; do
+  user=$(echo "$line" | awk '{print $1}')
+  original_shell=$(echo "$line" | awk '{print $3}')
 
-cat $result
+  # Restore the original shell of the user
+  sudo usermod -s "$original_shell" "$user"
+  INFO "Restored user $user shell to $original_shell"
+done < "$TMP1"
 
-echo ; echo
 
 
 

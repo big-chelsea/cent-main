@@ -17,11 +17,36 @@ EOF
 
 BAR
 
-# Change file owner and group to the original owner and group
-sudo chown "$(stat -c '%U:%G' /etc/passwd)" /etc/passwd
 
-# Set permissions to the original permissions
-sudo chmod "$(stat -c '%a' /etc/passwd)" /etc/passwd
+# Save the original owner and permissions of /etc/passwd to a temporary file
+stat -c "%U %G %a" /etc/passwd > /tmp/original_passwd_state
+
+# Check if the temporary file exists
+if [ -f "/tmp/original_passwd_state" ]; then
+  # Read the first line of the temporary file
+  original_state=$(head -n 1 /tmp/original_passwd_state)
+
+  # Split the line into an array using space as a separator
+  arr=($original_state)
+
+  # The first element of the array is the original owner
+  owner=${arr[0]}
+  # The second element of the array is the original group
+  group=${arr[1]}
+  # The third element of the array is the original permission
+  permission=${arr[2]}
+
+  # Restore the original owner, group, and permission of /etc/passwd
+  sudo chown $owner:$group /etc/passwd
+  sudo chmod $permission /etc/passwd
+
+  # Remove the temporary file
+  rm /tmp/original_passwd_state
+else
+  # The temporary file does not exist, display an error message
+  echo "Error: Temporary file not found, unable to restore the original state of /etc/passwd"
+fi
+
 
 cat $result
 

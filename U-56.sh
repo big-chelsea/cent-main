@@ -32,6 +32,8 @@ sudo cp /etc/profile /etc/profile.bak
 # Restore the original /etc/profile file
 sudo cp /etc/profile.bak /etc/profile
 
+echo "The file has been restored to its original state."
+
 # Remove the backup file
 sudo rm -rf /etc/profile.bak
 

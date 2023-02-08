@@ -24,17 +24,15 @@ TMP1=`SCRIPTNAME`.log
 
 >$TMP1  
 
-# Create an empty log file
-TMP1=`SCRIPTNAME`.log
->$TMP1
 
-# Get a list of deleted files in the /dev directory
-deleted_files=$(grep -oP "Delete /dev/\K.*" $TMP1)
+# Check if TMP1 file exists
+if [ -f "$TMP1" ]; then
+  # Restore files in /dev directory
+  while read file; do
+    sudo touch "$file"
+  done < "$TMP1"
+fi
 
-# Restore the deleted files
-for file in $deleted_files; do
-  sudo mknod "$file" c 0 0
-done
 
  
 

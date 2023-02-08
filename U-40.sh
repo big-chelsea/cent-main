@@ -21,16 +21,13 @@ TMP1=`SCRIPTNAME`.log
 >$TMP1  
 
 
-# Backup the original Apache configuration file
-cp /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.bak
 
-# Run the original script
-./original_script.sh
+# Defining Apache Configuration Files
+file="/etc/httpd/conf/httpd.conf"
 
-# In case of a problem, restore the original Apache configuration file
-if [ ! -z "$(cat /etc/httpd/conf/httpd.conf | grep "LimitRequestBody")" ]; then
-  cp /etc/httpd/conf/httpd.conf.bak /etc/httpd/conf/httpd.conf
-fi
+# Remove the LimitRequestBody directive added in the previous script
+sed -i '/LimitRequestBody/d' $file
+
 
 
 

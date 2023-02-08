@@ -26,15 +26,25 @@ TMP1=`SCRIPTNAME`.log
 > $TMP1 
 
 
+# Backup original httpd.conf
+cp /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.bak
 
-# Restore the original Server Tokens directive
-sed -i '/^ServerTokens/d' /etc/httpd/conf/httpd.conf
+# Restore original Server Tokens directive
+grep -q "^ServerTokens" /etc/httpd/conf/httpd.conf.bak
+if [ $? -eq 0 ]; then
+  sed -i 's/^ServerTokens.*/ServerTokens /' /etc/httpd/conf/httpd.conf
+else
+  sed -i '/^ServerTokens.*/d' /etc/httpd/conf/httpd.conf
+fi
 
-# Restore the original Server Signature directive
-sed -i '/^ServerSignature/d' /etc/httpd/conf/httpd.conf
+# Restore original Server Signature directive
+grep -q "^ServerSignature" /etc/httpd/conf/httpd.conf.bak
+if [ $? -eq 0 ]; then
+  sed -i 's/^ServerSignature.*/ServerSignature /' /etc/httpd/conf/httpd.conf
+else
+  sed -i '/^ServerSignature.*/d' /etc/httpd/conf/httpd.conf
+fi
 
-# Restart Apache service to apply changes
-service httpd restart
 
 
 

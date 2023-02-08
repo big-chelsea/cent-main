@@ -16,18 +16,16 @@ EOF
 
 BAR
 
-
-
-
-# Enable NFS service at boot time
+# Rename the disabled NFS startup script to its original name
 if [ -f "/etc/rc.d/rc2.d/_S60nfs" ]; then
 mv /etc/rc.d/rc2.d/_S60nfs /etc/rc.d/rc2.d/S60nfs
 fi
 
-# Start NFS-related processes
-for PID in $PIDs; do
-kill -9 -$PID
-done
+# Start the NFS related processes
+/usr/sbin/nfsd start
+/usr/sbin/statd start
+/usr/sbin/lockd start
+
 
 
 cat $result

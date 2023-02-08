@@ -26,14 +26,15 @@ TMP1=`SCRIPTNAME`.log
 
 
 
-# File Definitions
-file="/etc/ssh/sshd_config"
 
-# Restore the original state of the file by using a backup file
-cp $file.bak $file
+# Backup the original /etc/ssh/sshd_config file
+sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
 
-# Restart the ssh service for changes to take effect
-sudo service ssh restart
+# Restore the original /etc/ssh/sshd_config file
+sudo cp /etc/ssh/sshd_config.bak /etc/ssh/sshd_config
+
+# Remove the backup file
+sudo rm /etc/ssh/sshd_config.bak
 
 
 

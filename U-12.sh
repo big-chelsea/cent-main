@@ -18,13 +18,16 @@ EOF
 
 BAR
 
-# Get original owner and permissions of the /etc/services file
-original_owner=$(stat -c '%U:%G' /etc/services)
-original_permissions=$(stat -c '%a' /etc/services)
 
-# Restore the original owner and permissions
-sudo chown "$original_owner" /etc/services
-sudo chmod "$original_permissions" /etc/services
+ORIG_OWNER=$(stat -c "%U:%G" /etc/services)
+ORIG_PERMS=$(stat -c "%a" /etc/services)
+
+# Restore the original owner of the file
+sudo chown $ORIG_OWNER /etc/services
+
+# Restore the original permissions of the file
+sudo chmod $ORIG_PERMS /etc/services
+
 
 
 cat $result

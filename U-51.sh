@@ -33,28 +33,24 @@ TMP1=`SCRIPTNAME`.log
 
 > $TMP1
 
-# Prompt for group name
-read -p "Enter group name: " group_name
+necessary_groups=("root" "sudo" "sys" "adm" "wheel"
+"daemon" "bin" "lp" "dbus" "rpc" "rpcuser" "haldaemon"
+"apache" "postfix" "gdm" "adiosl" "mysql" "cubrid"
+"messagebus" "syslog" "avahi" "whoopsie"
+"colord" "systemd-network" "systemd-resolve"
+"systemd-timesync" "mysql" "user"
+"www-data" "sync")
 
-# Check if group exists
-if ! grep -q $group_name /etc/group; then
-  WARN "user 존재하지 않음"
-else
-  OK "user 존재함"
-  # Backup group information
-  grep $group_name /etc/group > $TMP2
-  # Delete group
-  groupdel $group_name
-fi
+# Read the necessary groups from the log file
+original_groups=$(cat "$TMP1")
 
-# Restore group in case of a problem
-if [ ! -f $TMP2 ]; then
-  groupadd $(cat $TMP2 | awk -F: '{print $1}')
-  echo "The group has been restored."
-fi
+# Add back the groups that were deleted
+for group in $original_groups; do
+  if ! echo "${necessary_groups[@]}" | grep -wq "$group"; then
+    groupadd "$group"
+  fi
+done
 
-cat $result
-echo ; echo
 
 
 

@@ -21,41 +21,25 @@ TMP1=`SCRIPTNAME`.log
 >$TMP1  
 
 
+
+# Defining Apache Configuration Files
 file="/etc/httpd/conf/httpd.conf"
 
-# Backup the original file
-cp $file "$file.bak"
-
 if [ -f "$file" ]; then
-  # Replace "AllowOverride None" with "AllowOverride AuthConfig"
-  sed -i 's/AllowOverride None/AllowOverride AuthConfig/g' $file
+# # Replace "AllowOverride AuthConfig" with "AllowOverride None"
+sed -i 's/AllowOverride AuthConfig/AllowOverride None/g' $file
 
-  # Check for changes
-  if grep -q "AllowOverride AuthConfig" $file; then
-    echo "AllowOverrideNone was successfully replaced with AllowOverrideAuthConfig."
-  else
-    echo "Replacing AllowOverrideNone with AllowOverrideAuthConfig failed."
-  fi
+# Check for changes
+if grep -q "AllowOverride None" $file; then
+OK "AllowOverride AuthConfig was replaced with AllowOverride None."
+else
+WARN "AllowOverride AuthConfig could not be replaced with AllowOverride None."
+fi
 fi
 
 # Restart the httpd daemon to apply configuration changes
 sudo service httpd restart
 
-# Restore the original file if there is a problem
-if [ ! -f "$file.bak" ]; then
-  echo "Error: Backup file not found."
-  exit 1
-fi
-
-echo "Do you want to restore the original file? (yes/no)"
-read answer
-
-if [ "$answer" == "yes" ]; then
-  mv "$file.bak" $file
-  echo "Original file was successfully restored."
-else
-  echo "Original file was not restored."
-fi
 
 
 cat $result

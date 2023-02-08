@@ -20,17 +20,15 @@ TMP1=`SCRIPTNAME`.log
 
 >$TMP1  
 
-# Restore original owner and group information for /etc/inetd.conf
-sudo chown "$(stat -c '%U:%G' /etc/inetd.conf)" /etc/inetd.conf
+ORIG_OWNER=$(stat -c "%U:%G" /etc/hosts)
+ORIG_PERMS=$(stat -c "%a" /etc/hosts)
 
-# Restore original file permissions for /etc/inetd.conf
-sudo chmod "$(stat -c '%a' /etc/inetd.conf)" /etc/inetd.conf
+# Restore the original owner of the file
+sudo chown $ORIG_OWNER /etc/hosts
 
-# Restore original owner and group information for /etc/xinetd.conf
-sudo chown "$(stat -c '%U:%G' /etc/xinetd.conf)" /etc/xinetd.conf
+# Restore the original permissions of the file
+sudo chmod $ORIG_PERMS /etc/hosts
 
-# Restore original file permissions for /etc/xinetd.conf
-sudo chmod "$(stat -c '%a' /etc/xinetd.conf)" /etc/xinetd.conf
 
 
 # 하위 파일...

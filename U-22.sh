@@ -21,31 +21,35 @@ TMP1=`SCRIPTNAME`.log
 >$TMP1  
 
 
-# Define the directory containing cron-related files
-dir="/etc/cron.d/"
+#!/bin/bash
 
-# Define cron-related files
-files=("cron.daily" "cron.hourly" "cron.monthly" "cron.weekly")
+sudo chown root:root /etc/crontab
+sudo chmod 644 /etc/crontab
 
-for file in "${files[@]}"
-do
-# Verify that files exist in the defined directory
-if [ -f "$dir$file" ]; then
-# Restore the original owner of the file
-sudo chown root "$dir$file"
-# Restore the original permissions to the file
-sudo chmod 644 "$dir$file"
-else
-echo "$file not found in $dir"
-fi
-done
+sudo chown root:root /etc/cron.hourly
+sudo chmod 755 /etc/cron.hourly
 
-# Restore original permissions for crontab commands
-sudo chmod 755 /usr/bin/crontab
+sudo chown root:root /etc/cron.daily
+sudo chmod 755 /etc/cron.daily
 
+sudo chown root:root /etc/cron.weekly
+sudo chmod 755 /etc/cron.weekly
 
-#@@@@이외의 관련 설정파일도 추가적으로 권한설정 할 수 있어야 함.@@@@@
-#@@@@또 crontab명령어를 일반사용자에게 허용하는 경우도 추가@@@@
+sudo chown root:root /etc/cron.monthly
+sudo chmod 755 /etc/cron.monthly
+
+sudo chown root:root /etc/cron.allow
+sudo chmod 644 /etc/cron.allow
+
+sudo chown root:root /etc/cron.deny
+sudo chmod 644 /etc/cron.deny
+
+sudo chown root:root /var/spool/cron*
+sudo chmod 755 /var/spool/cron*
+
+sudo chown root:root /var/spool/cron/crontabs/
+sudo chmod 755 /var/spool/cron/crontabs/
+
 
 cat $result
 

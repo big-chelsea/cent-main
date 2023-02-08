@@ -16,13 +16,21 @@ EOF
 
 BAR
 
-# Remove the created xinetd configuration files for tftp, talk, and ntalk services
-rm -f /etc/xinetd.d/tftp
-rm -f /etc/xinetd.d/talk
-rm -f /etc/xinetd.d/ntalk
+# Remove tftp, talk, and ntalk files
+sudo rm /etc/xinetd.d/tftp
+sudo rm /etc/xinetd.d/talk
+sudo rm /etc/xinetd.d/ntalk
 
-# Restart the xinetd service to reflect the changes
-systemctl restart xinetd
+# Re-enable tftp, talk, and ntalk services
+sudo update-rc.d tftp enable
+sudo update-rc.d talk enable
+sudo update-rc.d ntalk enable
+
+# Start tftp, talk, and ntalk services
+sudo service tftp start
+sudo service talk start
+sudo service ntalk start
+
 
 
 cat $result

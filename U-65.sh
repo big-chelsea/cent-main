@@ -25,15 +25,12 @@ TMP1=`SCRIPTNAME`.log
 > $TMP1
 
 
+sudo chmod 2755 /usr/bin/at
 
-# Restore original permissions of /usr/bin/at
-sudo chmod 755 /usr/bin/at
-OK "Restored original permissions of /usr/bin/at"
-
-# Restore original owner and permissions of /etc/at.deny
 sudo chown root:root /etc/at.deny
+
 sudo chmod 644 /etc/at.deny
-OK "Restored original owner and permissions of /etc/at.deny"
+
 
 
 

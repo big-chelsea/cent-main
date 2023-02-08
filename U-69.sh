@@ -24,12 +24,12 @@ TMP1=`SCRIPTNAME`.log
 > $TMP1
 
 
+# File Definition
 filename="/etc/exports"
-original_owner=$(stat -c %U "$filename")
-original_permissions=$(stat -c %a "$filename")
 
-sudo chown "$original_owner" "$filename"
-sudo chmod "$original_permissions" "$filename"
+# Revert the changes made to the NFS access control settings file
+sudo chown root "$filename"
+sudo chmod 644 "$filename"
 
 
 

@@ -26,18 +26,19 @@ TMP1=`SCRIPTNAME`.log
 
 > $TMP1
 
-# Prompt for username
-read -p "Enter username: " username
 
-# Check if user is already a member of the "manager" group
-if groups $username | grep -q 'manager'; then
-  echo "User is already a member of the 'manager' group. Exiting."
-  exit 1
+# check if the backup file exists
+if [ -f "/path/to/backup/etc_passwd_backup" ]; then
+  # restore the backup of the /etc/passwd file
+  sudo cp /path/to/backup/etc_passwd_backup /etc/passwd
+  # set the correct permissions on the /etc/passwd file
+  sudo chmod 644 /etc/passwd
+  sudo chown root:root /etc/passwd
+  echo "The system has been successfully restored to its original state."
+else
+  echo "Backup file not found. Unable to restore the system."
 fi
 
-# Add user to the "manager" group
-gpasswd -a $username manager
-echo "User added to the 'manager' group."
 
  
 

@@ -21,11 +21,21 @@ BAR
 # Start the NFS service
 sudo service nfs start
 
-# Re-export all NFS file systems
-sudo exportfs -rav
+# Check the status of the NFS service
+sudo service nfs status
 
-# Restart the NFS service
-sudo service nfs restart
+# Check if the NFS service is running correctly by mounting and accessing an NFS share
+sudo mount <NFS_server_IP>:<NFS_share_path> <local_mount_point>
+ls <local_mount_point>
+
+# If there's an issue, print an error message and exit
+if [ $? -ne 0 ]; then
+  echo "Error: NFS service could not be restored to its original state"
+  exit 1
+fi
+
+echo "NFS service has been successfully restored to its original state"
+
 
 
 cat $result

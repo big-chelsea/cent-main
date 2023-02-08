@@ -26,18 +26,31 @@ TMP1=`SCRIPTNAME`.log
 
 > $TMP1
 
-# Prompt for username
-read -p "Enter username: " username
+# Get a list of users whose shell is set to /bin/false
+user_list=$(cat /etc/passwd | grep /bin/false | awk -F: '{print $1}')
 
-# Check if user already exists
-if grep -q $username /etc/passwd; then
-  echo "User already exists. Exiting."
-  exit 1
+# Rotate the list of users
+for user in $user_list; do
+# Change the user shell to /bin/bash
+usermod -s /bin/bash $user
+if [ $? -eq 0 ]; then
+INFO "Login is now enabled for user: $user."
+else
+OK "Unable to enable login for user: $user."
 fi
+done
 
-# Restore user account
-useradd $username
-echo "User account restored."
+# Get a list of recently deleted non-default accounts
+deleted_users=$(grep "Removing non-default account" $TMP1 | awk '{print $NF}')
+
+# Rotate the list of deleted users
+for user in $deleted_users; do
+INFO "Restoring non-default account: $user"
+sudo useradd "$user"
+done
+
+OK "All non-default accounts have been restored."
+
 
  
 cat $result

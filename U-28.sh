@@ -17,41 +17,43 @@ EOF
 BAR
 
 
-# Enable ypserv service at boot time
-sudo update-rc.d ypserv enable
 
-# Start ypserv service
+# Start the ypserv service
 sudo service ypserv start
 
-# Enable ypbind service at boot time
-sudo update-rc.d ypbind enable
+# Enable the ypserv service to start at bootup
+sudo update-rc.d ypserv enable
 
 # Start ypbind service
 sudo service ypbind start
 
-# Enable ypxfrd service at boot time
-sudo update-rc.d ypxfrd enable
+# Set ypbind service to start at boot time
+sudo update-rc.d ypbind enable
 
 # Start ypxfrd service
 sudo service ypxfrd start
 
-# Enable rpc.yppasswdd service at boot time
-sudo update-rc.d rpc.yppasswdd enable
+# Enable ypxfrd service to start at bootup
+sudo update-rc.d ypxfrd enable
 
-# Start rpc.yppasswdd service
+# Start the rpc.yppasswdd service
 sudo service rpc.yppasswdd start
 
-# Enable rpc.ypupdated service at boot time
-sudo update-rc.d rpc.ypupdated enable
+# Enable the rpc.yppasswdd service at bootup
+sudo update-rc.d rpc.yppasswdd enable
 
-# Start rpc.ypupdated service
+# Start the rpc.yupdated service
 sudo service rpc.ypupdated start
 
-# Enable ypserv service at boot time
+# Enable the rpc.ypupdate service at bootup
+sudo update-rc.d rpc.ypupdated enable
+
+# Start the ypserv service
+sudo service ypserv start
+
+# Enable the ypserv service to start at bootup
 sudo update-rc.d ypserv enable
 
-# Start ypserv service
-sudo service ypserv start
 
 
 cat $result

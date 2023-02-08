@@ -24,14 +24,14 @@ TMP1=`SCRIPTNAME`.log
 
 > $TMP1
 
-# Backup the original hosts.lpd file
-sudo cp /etc/hosts.lpd /etc/hosts.lpd.bak
 
-# Restore the original hosts.lpd file
+
 sudo cp /etc/hosts.lpd.bak /etc/hosts.lpd
+sudo chown root:root /etc/hosts.lpd
+sudo chmod 600 /etc/hosts.lpd
 
-# Remove the backup file
-sudo rm -rf /etc/hosts.lpd.bak
+echo "The file has been restored to its original state."
+
 
 
 cat $result

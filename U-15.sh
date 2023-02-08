@@ -20,22 +20,14 @@ TMP1=`SCRIPTNAME`.log
 
 >$TMP1  
 
-# Create an empty log file
-TMP1=`SCRIPTNAME`.log
->$TMP1
 
-critical_dir="/path/to/system/critical/directory"
+if [ -f $TMP1 ]; then
+  while read line; do
+    # Restore the original permissions of the file
+    sudo chmod $line /path/to/file
+  done < $TMP1
+fi
 
-# Get the original permissions of each file in the critical directory
-for file in "$critical_dir"/*; do
-  if [ ! -f "$file" ]; then
-    continue
-  fi
-
-  original_permission=$(stat -c '%a' "$file")
-  # Restore the original permissions
-  sudo chmod "$original_permission" "$file"
-done
 
 
 

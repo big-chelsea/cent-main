@@ -16,14 +16,31 @@ EOF
 
 BAR
 
-# Start the automountd service
-sudo service autofs start
 
-# Set the automountd service to start automatically at boot time
-sudo chkconfig autofs on
+# Enable the Auto Mount service by changing the name of the startup script
+if [ -f "/etc/rc.d/rc2.d/_S28automountd" ]; then
+mv /etc/rc.d/rc2.d/_S28automountd /etc/rc.d/rc2.d/S28automountd
+fi
 
-# Check the status of the automountd service
-sudo service autofs status
+# Check the status of the Auto Mount service
+status=$(svcs -a | grep "autofs" | awk '{print $1}')
+
+# If the service is not running, start the service
+if [ "$status" != "online" ]; then
+/etc/rc.d/init.d/automount start
+fi
+
+# Check the status of the Auto Mount service again
+status=$(svcs -a | grep "autofs" | awk '{print $1}')
+
+# If the service is not running, print an error message and exit
+if [ "$status" != "online" ]; then
+  echo "Error: Auto Mount service could not be restored to its original state"
+  exit 1
+fi
+
+echo "Auto Mount service has been successfully restored to its original state"
+
 
 cat $result
 

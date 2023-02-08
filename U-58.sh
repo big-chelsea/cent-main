@@ -27,12 +27,14 @@ TMP1=`SCRIPTNAME`.log
 
 
 
-# Revert changes made to the home directory for user accounts
 for user in $(awk -F: '{ if ($3 >= 1000 && $3 <= 60000) print $1}' /etc/passwd); do
-if [ -d /home/$user ]; then
-usermod -d / $user
-fi
+  if [ -d /home/$user ]; then
+    usermod -d /$user $user
+  fi
 done
+
+echo "The home directories for user accounts have been restored to their original state."
+
 
 
 

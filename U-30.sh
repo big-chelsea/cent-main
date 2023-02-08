@@ -25,32 +25,17 @@ EOF
 
 BAR
 
-# Function to restore original state
-restore_state() {
-  # Check if the sendmail version has changed
-  original_version=`echo \$Z | /usr/lib/sendmail -bt -d0 | sed -n '1p' | awk '{print $2}'`
 
-  if [ "$original_version" != "$SV" ]; then
-    # Uninstall the latest version of sendmail
-    yum remove sendmail
+# Start Sendmail service
+sudo service sendmail restart
 
-    # Install the original version of sendmail
-    yum install sendmail-$original_version
-
-    # Start the sendmail daemon
-    service sendmail start
-  fi
-}
-
-# Run the original script
-./script.sh
-
-# Check if there's an error
-if [ $? -ne 0 ]; then
-  echo "An error occurred while running the script."
-  echo "Restoring the original state..."
-  restore_state
+# Check if the service is running
+if [ $(systemctl is-active sendmail) == "active" ]; then
+  echo "Sendmail service has been successfully restarted"
+else
+  echo "Error starting the Sendmail service"
 fi
+
 
 
 

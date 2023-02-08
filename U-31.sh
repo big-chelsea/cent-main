@@ -16,23 +16,21 @@ EOF
 
 BAR
 
-
-
-
+# Backup the original file
+cp /etc/mail/sendmail.cf /etc/mail/sendmail.cf.bak
 
 # Specify file path
-file="/etc/mail/access"
+file="/etc/mail/sendmail.cf"
 
-# Remove the line that sets relay restrictions
-sed -i '/R.*550 Relaying denied/d' $file
+# Specify the original line
+line="R$* $#error $@ 5.7.1 $: \"550 Relaying denied\""
 
-# Remove annotations from lines
-sed -i '/^[A-Z].*#/ s/#//' $file
+# Add annotations to the original line
+sed -i "s/$line/#&/" $file
 
-# Remove the access.db file
-rm /etc/mail/access.db
+# Verify that the line has been restored
+grep "$line" $file
 
-INFO "Original state restored"
 
 
 cat $result

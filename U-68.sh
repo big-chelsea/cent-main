@@ -24,32 +24,17 @@ TMP1=`SCRIPTNAME`.log
 > $TMP1
 
 
+
+# File Definitions
 files=("/etc/motd" "/etc/issue.net" "/etc/vsftpd/vsftpd.conf" "/etc/mail/sendmail.cf" "/etc/named.conf")
-backup_dir="./backup"
 
-# Create the backup directory if it doesn't exist
-if [ ! -d "$backup_dir" ]; then
-  mkdir "$backup_dir"
-fi
-
-# Backup original files
+# Revert the changes made to the logon message
 for file in "${files[@]}"; do
   if [ -e "$file" ]; then
-    cp "$file" "$backup_dir/$(basename "$file")"
+    echo "" > "$file"
   fi
 done
 
-# Restore original files
-for file in "$backup_dir/*"; do
-  original_file="${file/$backup_dir\//}"
-  if [ -e "$file" ]; then
-    cp "$file" "$original_file"
-    OK "Restored original file $original_file"
-  fi
-done
-
-# Clean up backup directory
-rm -rf "$backup_dir"
 
 
 

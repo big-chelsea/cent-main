@@ -16,16 +16,16 @@ EOF
 
 BAR
 
-# Get original file owner and permission information
-OWNER=$(stat -c '%U' /etc/inetd.conf)
-GROUP=$(stat -c '%G' /etc/inetd.conf)
-PERM=$(stat -c '%a' /etc/inetd.conf)
 
-# Restore original file owner
-sudo chown $OWNER:$GROUP /etc/inetd.conf
+ORIG_OWNER=$(stat -c "%U:%G" /etc/xinetd.conf)
+ORIG_PERMS=$(stat -c "%a" /etc/xinetd.conf)
 
-# Restore original file permissions
-sudo chmod $PERM /etc/inetd.conf
+# Restore the original owner of the file
+sudo chown $ORIG_OWNER /etc/xinetd.conf
+
+# Restore the original permissions of the file
+sudo chmod $ORIG_PERMS /etc/xinetd.conf
+
 
 
 cat $result

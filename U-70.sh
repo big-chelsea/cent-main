@@ -25,11 +25,12 @@ TMP1=`SCRIPTNAME`.log
 > $TMP1
 
 
-# Move sendmail init script back to /etc/rc2.d
+# Restore sendmail init script
 mv /etc/rc2.d/S88sendmail_bak /etc/rc2.d/S88sendmail
 
-# Start the outgoing mail process
-/etc/init.d/sendmail start
+# Start the sendmail service
+service sendmail start
+
 
 
 

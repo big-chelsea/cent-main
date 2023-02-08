@@ -24,27 +24,15 @@ TMP1=`SCRIPTNAME`.log
 
 >$TMP1  
 
-# Set the log file path
-log_file="/var/log/patch.log"
 
-# Check if the patch log file exists
-if [ ! -f $log_file ]; then
-  touch $log_file
-fi
+# Revert to the previous version of the system
+yum downgrade -y
 
-# Install patches
-yum update
-yum upgrade -y
+# Remove the installed patches
+yum remove -y $(cat /var/log/patch.log | awk '{print $6}' | xargs)
 
-# Log the patches installed
-echo "Patches installed at $(date)" >> $log_file
-
-# Verify installed patches
-if yum -s dist-upgrade | grep "0 upgraded, 0 newly installed"; then
-  OK "No new patches available"
-else
-  WARN "New patches available"
-fi
+# Clear the patch log file
+echo "" > /var/log/patch.log
 
 
 

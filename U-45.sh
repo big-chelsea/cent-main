@@ -17,23 +17,15 @@ EOF
 
 BAR
 
+# Remove the SUID bit from the su command
+sudo chmod u-s $(which su)
 
+# Remove group restriction for su command
+sudo chgrp root $(which su)
+sudo chmod g+rwx $(which su)
+sudo chmod g-rxs $(which su)
 
-# Remove wheel group from the list of users
-for user in "${user_list[@]}"; do
-  usermod -G "" "$user"
-  OK "Removed user $user from the wheel group."
-done
-
-# Reset permission to 4755 in su command
-chmod 4755 /bin/su
-
-# Validate Permissions
-if [ $(stat -c %a /bin/su) == "4755" ]; then
-  Permission for OK "/bin/su is set to 4755."
-else
-  Failed to set permissions for WARN "/bin/su."
-fi
+echo "The original state of the su command has been restored."
 
 
 

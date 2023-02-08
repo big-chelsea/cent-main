@@ -16,15 +16,19 @@ EOF
 
 BAR
 
-# Check if backup file exists
-if [ -f /etc/xinetd.d/finger.bak ]
-then
-    # Restore original file from backup
-    sudo mv /etc/xinetd.d/finger.bak /etc/xinetd.d/finger
-    OK "Original configuration of the Finger service restored from backup."
-else
-    WARN "Backup file of original configuration not found."
+
+# Remove the changes made to the finger service configuration file
+if [ -f /etc/xinetd.d/finger ]; then
+  rm /etc/xinetd.d/finger
 fi
+
+# Restore the original finger service configuration file
+if [ -f /etc/xinetd.d/finger.bak ]; then
+  mv /etc/xinetd.d/finger.bak /etc/xinetd.d/finger
+fi
+
+echo "Finger service restored to its original state."
+
 
 cat $result
 

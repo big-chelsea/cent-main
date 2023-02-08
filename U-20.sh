@@ -22,13 +22,27 @@ TMP1=`SCRIPTNAME`.log
 
 
 
-# Restore original vsftpd configuration
-sudo cp /etc/vsftpd.conf.bak /etc/vsftpd.conf
+# Restore the FTP user
+sudo useradd ftp
 
-# Restart vsftpd service to apply changes
-sudo service vsftpd restart
+# Set the path to the vsftpd.conf file
+vsftpd_conf_file="/etc/vsftpd.conf"
 
-INFO "Original vsftpd configuration restored successfully."
+# Verify that the vsftpd.conf file exists.
+if [ -f $vsftpd_conf_file ]; then
+  # Remove the line "anonymous_enable=NO" (if present)
+  sed -i '/^anonymous_enable=NO/d' $vsftpd_conf_file
+else
+  # File not found
+  INFO " $vsftpd_conf_file not found."
+fi
+
+# Restore the original vsftpd.conf file from backup
+if [ -f $vsftpd_conf_file.bak ]; then
+  mv $vsftpd_conf_file.bak $vsftpd_conf_file
+fi
+
+echo "Anonymous FTP has been restored to its original state."
 
 
 

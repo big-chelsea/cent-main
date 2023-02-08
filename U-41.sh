@@ -21,16 +21,12 @@ TMP1=`SCRIPTNAME`.log
 >$TMP1  
 
 
-# Backup the original Apache configuration file
-cp /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.bak
+# Defining Apache Configuration Files
+file="/etc/httpd/conf/httpd.conf"
 
-# Run the original script
-./original_script.sh
+# Replace DocumentRoot value with the original path
+sed -i 's#DocumentRoot /home/centos/newphp/#DocumentRoot /var/www/html#g' $file
 
-# In case of a problem, restore the original Apache configuration file
-if [ ! -z "$(cat /etc/httpd/conf/httpd.conf | grep "DocumentRoot /home/centos/newphp/")" ]; then
-  cp /etc/httpd/conf/httpd.conf.bak /etc/httpd/conf/httpd.conf
-fi
 
 
 

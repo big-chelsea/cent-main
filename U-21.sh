@@ -16,26 +16,30 @@ EOF
 
 BAR
 
-# Restore the original rlogin file
+
+# Restore /etc/xinetd.d/rlogin file
 if [ -f /etc/xinetd.d/rlogin.bak ]; then
   mv /etc/xinetd.d/rlogin.bak /etc/xinetd.d/rlogin
 else
-  rm /etc/xinetd.d/rlogin
+  echo "/etc/xinetd.d/rlogin.bak not found."
 fi
 
-# Restore the original rsh file
+# Restore /etc/xinetd.d/rsh file
 if [ -f /etc/xinetd.d/rsh.bak ]; then
   mv /etc/xinetd.d/rsh.bak /etc/xinetd.d/rsh
 else
-  rm /etc/xinetd.d/rsh
+  echo "/etc/xinetd.d/rsh.bak not found."
 fi
 
-# Restore the original rexec file
+# Restore /etc/xinetd.d/rexec file
 if [ -f /etc/xinetd.d/rexec.bak ]; then
   mv /etc/xinetd.d/rexec.bak /etc/xinetd.d/rexec
 else
-  rm /etc/xinetd.d/rexec
+  echo "/etc/xinetd.d/rexec.bak not found."
 fi
+
+echo "The r-family services have been restored to their original state."
+
 
 
 cat $result

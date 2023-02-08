@@ -35,20 +35,27 @@ TMP1=`SCRIPTNAME`.log
 
 > $TMP1
 
-# Prompt for username
-read -p "Enter username: " username
 
-# Check if the user has been modified
-if grep -q $username /etc/passwd; then
-  # Get the original UID
-  original_uid=$(grep $username /etc/passwd | cut -d: -f3)
+# Store the original UIDs and username pairs
+TMP3=$(mktemp)
+awk -F: '{print $1 ":" $3}' "/etc/passwd" > $TMP3
 
-  # Restore the original UID
-  usermod -u $original_uid $username
+# Run the previous script
+./U-52.sh
 
-  OK "User's UID has been restored to its original state"
+# Check if the previous script has caused any problems
+if [ "$?" -ne 0 ]; then
+  # Revert the changes made to the user accounts
+  while read -r line; do
+    USER=$(echo "$line" | cut -d: -f1)
+    UID=$(echo "$line" | cut -d: -f2)
+    sudo usermod -u "$UID" "$USER"
+  done < "$TMP3"
+  echo "Changes have been successfully rolled back."
 else
-  ERR "User not found"
+  # Remove temporary files
+  sudo rm $TMP3
+  echo "No problems detected, temporary files have been removed."
 fi
 
 

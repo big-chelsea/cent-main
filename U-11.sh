@@ -18,16 +18,16 @@ EOF
 
 BAR
 
-# Get original file owner and permission information
-OWNER=$(stat -c '%U' /etc/syslog.conf)
-GROUP=$(stat -c '%G' /etc/syslog.conf)
-PERM=$(stat -c '%a' /etc/syslog.conf)
 
-# Restore original file owner
-sudo chown $OWNER:$GROUP /etc/syslog.conf
+ORIG_OWNER=$(stat -c "%U:%G" /etc/rsyslog.conf)
+ORIG_PERMS=$(stat -c "%a" /etc/rsyslog.conf)
 
-# Restore original file permissions
-sudo chmod $PERM /etc/syslog.conf
+# Restore the original owner of the file
+sudo chown $ORIG_OWNER /etc/rsyslog.conf
+
+# Restore the original permissions of the file
+sudo chmod $ORIG_PERMS /etc/rsyslog.conf
+
 
 cat $result
 

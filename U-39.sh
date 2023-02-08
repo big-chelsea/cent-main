@@ -20,41 +20,12 @@ TMP1=`SCRIPTNAME`.log
 
 >$TMP1  
 
-
 # Defining Apache Configuration Files
 file="/etc/httpd/conf/httpd.conf"
 
-# Check if the file exists
-if [ -f "$file" ]; then
-  echo "Found Apache configuration file."
-else
-  echo "Apache configuration file not found."
-  exit 1
-fi
+# Replace "Options" with "Options FollowSymLinks"
+sed -i 's/Options/Options FollowSymLinks/g' $file
 
-# Backup the file
-cp $file $file.bak
-
-# Replace "Options Follow Symplinks" with "Options"
-sed -i 's/Options FollowSymLinks/Options/g' $file
-
-# Check for changes
-if grep -q "Options" $file; then
-  echo "Options FollowSymLinks was replaced with Options."
-else
-  echo "Options FollowSymLinks was not replaced with Options."
-fi
-
-# Restore the file if there is a problem
-echo "Do you want to restore the original Apache configuration file? (yes/no)"
-read answer
-
-if [ "$answer" == "yes" ]; then
-  mv $file.bak $file
-  echo "Apache configuration file was successfully restored."
-else
-  echo "Apache configuration file was not restored."
-fi
 
 
 

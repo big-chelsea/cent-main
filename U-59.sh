@@ -27,19 +27,25 @@ TMP1=`SCRIPTNAME`.log
 
 
 
-# Defining the list of deleted hidden files and directories
-deleted_hidden_files=$(sudo grep "Found unwanted file:" $TMP1 | awk '{print $5}')
-deleted_hidden_dirs=$(sudo grep "Found suspicious directory:" $TMP1 | awk '{print $5}')
+# Define the location of backup files
+backup_files_dir="$HOME/hidden_files_backup"
 
-# Restore the deleted hidden files
-for file in $deleted_hidden_files; do
-sudo touch $file
+# Check if the backup directory exists
+if [ ! -d "$backup_files_dir" ]; then
+  echo "Backup directory does not exist, no files to restore"
+  exit 1
+fi
+
+# Restore hidden files and directories
+for file in $(ls "$backup_files_dir"); do
+  cp "$backup_files_dir/$file" "$file"
 done
 
-# Restore the deleted hidden directories
-for dir in $deleted_hidden_dirs; do
-sudo mkdir $dir
-done
+# Remove the backup directory
+rm -rf "$backup_files_dir"
+
+echo "Original state has been restored successfully."
+
 
 
 

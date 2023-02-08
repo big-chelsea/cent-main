@@ -19,11 +19,18 @@ EOF
 BAR
 
 
-# Start the Sendmail service
-sudo service sendmail start
 
-# Enable the Sendmail service to start at boot time
-sudo update-rc.d sendmail enable
+# Start the Sendmail service
+sendmail &
+
+# Confirm Sendmail is running
+PID=$(ps -ef | grep sendmail | awk '{print $2}')
+if [ -z "$PID" ]; then
+  echo "Sendmail service could not be started."
+else
+  echo "Sendmail service has been started with PID: $PID"
+fi
+
 
 
 cat $result

@@ -21,39 +21,17 @@ TMP1=`SCRIPTNAME`.log
 >$TMP1  
 
 
-# Check for unnecessary files and directories
-echo "Checking Apache home directory for unwanted files and directories..."
-if [ -d "/etc/httpd/conf/httpd.conf/manual" ]; then
-  echo "Found manual directory."
-else
-  echo "Manual directory not found."
+
+HTTPD_ROOT="/etc/httpd/conf/httpd.conf"
+UNWANTED_ITEMS="manual samples docs"
+
+for item in $UNWANTED_ITEMS
+do
+if [ ! -d "$HTTPD_ROOT/$item" ] && [ ! -f "$HTTPD_ROOT/$item" ]; then
+sudo cp -r "$HTTPD_ROOT/backup/$item" "$HTTPD_ROOT/$item"
+echo "$item has been restored to $HTTPD_ROOT"
 fi
-
-# Backup the manual directory
-cp -r /etc/httpd/conf/httpd.conf/manual /etc/httpd/conf/httpd.conf/manual.bak
-
-# Remove manual directories and files
-echo "Removing manual directory and files..."
-sudo rm -rf /etc/httpd/conf/httpd.conf/manual
-
-# Verify that files and directories have been removed
-echo "Checking if manual directories and files have been removed..."
-if [ -d "/etc/httpd/conf/httpd.conf/manual" ]; then
-  echo "Manual directory and files still exist."
-else
-  echo "Manual directory and files have been removed."
-fi
-
-# Restore the manual directory if there is a problem
-echo "Do you want to restore the manual directory? (yes/no)"
-read answer
-
-if [ "$answer" == "yes" ]; then
-  mv /etc/httpd/conf/httpd.conf/manual.bak /etc/httpd/conf/httpd.conf/manual
-  echo "Manual directory was successfully restored."
-else
-  echo "Manual directory was not restored."
-fi
+done
 
 
 

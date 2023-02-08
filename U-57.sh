@@ -25,21 +25,17 @@ TMP1=`SCRIPTNAME`.log
 
 > $TMP1  
 
-# 홈 디렉터리의 원래 소유권 및 사용 권한 백업
+
+
 for user in $(awk -F: '{ if ($3 >= 1000 && $3 <= 60000) print $1}' /etc/passwd); do
   if [ -d /home/$user ]; then
-    sudo cp -Rp /home/$user /home/$user.bak
+    usermod -d /$user $user
   fi
 done
 
-# 홈 디렉터리의 원래 소유권 및 사용 권한 복원
-for user in $(awk -F: '{ if ($3 >= 1000 && $3 <= 60000) print $1}' /etc/passwd); do
-  if [ -d /home/$user ]; then
-    sudo rm -rf /home/$user
-    sudo cp -Rp /home/$user.bak /home/$user
-    sudo rm -rf /home/$user.bak
-  fi
-done
+echo "The home directories for user accounts have been restored to their original state."
+
+
 
 
 
