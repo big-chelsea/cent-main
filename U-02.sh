@@ -20,7 +20,8 @@ TMP1=`SCRIPTNAME`.log
 
 >$TMP1  
 
-# 확인필요
+# Restore login.defs files
+cp /etc/login.defs.bak /etc/login.defs
 
 # Restore source files
 cp /etc/pam.d/system-auth.bak /etc/pam.d/system-auth
@@ -28,7 +29,8 @@ cp /etc/pam.d/system-auth.bak /etc/pam.d/system-auth
 # Remove backup file
 rm /etc/pam.d/system-auth.bak
 
-
+# Remove backup file
+rm /etc/login.defs.bak
 
 cat $result
 
