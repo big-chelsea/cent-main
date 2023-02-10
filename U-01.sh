@@ -22,9 +22,9 @@ BAR
 if [ -f "/etc/pam.d/login.bak" ]; then
   sudo cp /etc/pam.d/login.bak /etc/pam.d/login
   if [ $? -eq 0 ]; then
-    echo "Successfully restored /etc/pam.d/login to its original state."
+    OK "Successfully restored /etc/pam.d/login to its original state."
   else
-    echo "Failed to restore /etc/pam.d/login to its original state."
+    WARN "Failed to restore /etc/pam.d/login to its original state."
   fi
 else
   echo "/etc/pam.d/login.bak not found, original state has not been recovered."
@@ -33,9 +33,9 @@ fi
 if [ -f "/etc/security.bak" ]; then
   sudo cp /etc/security.bak /etc/security
   if [ $? -eq 0 ]; then
-    echo "Successfully restored /etc/security to its original state."
+    OK "Successfully restored /etc/security to its original state."
   else
-    echo "Failed to restore /etc/security to its original state."
+    WARN "Failed to restore /etc/security to its original state."
   fi
 else
   echo "/etc/security.bak not found, original state has not been recovered."
