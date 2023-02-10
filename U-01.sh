@@ -17,11 +17,7 @@ EOF
 BAR
 
 
-# Restore /etc/pam.d/login to its original state
-sudo mv /etc/pam.d/login.bak /etc/pam.d/login
 
-# Restore /etc/securety to its original state
-sudo mv /etc/securety.bak /etc/securety
 
 if [ -f "/etc/pam.d/login.bak" ]; then
   sudo mv /etc/pam.d/login.bak /etc/pam.d/login
