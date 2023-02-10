@@ -1,10 +1,7 @@
 #!/bin/bash
 
- 
-
 . function.sh
  
-
 BAR
 
 CODE [U-63] ftpusers 파일 소유자 및 권한 설정
@@ -19,7 +16,6 @@ BAR
 TMP1=`SCRIPTNAME`.log
 
 > $TMP1
-
 
 # Get the original owner and permission settings of the ftpusers file
 original_owner=$(stat -c "%U:%G" /etc/vsftpd/ftpusers.bak)

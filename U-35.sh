@@ -17,15 +17,21 @@ TMP1=`SCRIPTNAME`.log
 
 >$TMP1  
 
-
-# Defining Apache Configuration Files
+# Define the Apache Configuration File
 file="/etc/httpd/conf/httpd.conf"
 
 # Replace "Options" with "Options Indexes"
 sudo sed -i 's/Options/Options Indexes/g' $file
 
+# Restart Apache service
+sudo systemctl restart httpd
 
-
+# Check if Apache service is running
+if systemctl is-active --quiet httpd; then
+  OK "Apache service has been successfully restored."
+else
+  WARN "Apache service has not been restored."
+fi
 
 
 

@@ -14,6 +14,9 @@ EOF
 
 BAR
 
+TMP1=`SCRIPTNAME`.log
+
+>$TMP1 
 
 # Restore original permissions for specified files
 restore_permissions() {

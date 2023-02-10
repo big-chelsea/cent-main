@@ -13,20 +13,34 @@ EOF
 
 BAR
 
-# Remove tftp, talk, and ntalk files
-sudo rm /etc/xinetd.d/tftp
-sudo rm /etc/xinetd.d/talk
-sudo rm /etc/xinetd.d/ntalk
+TMP1=`SCRIPTNAME`.log
 
-# Re-enable tftp, talk, and ntalk services
-sudo update-rc.d tftp enable
-sudo update-rc.d talk enable
-sudo update-rc.d ntalk enable
+>$TMP1 
 
-# Start tftp, talk, and ntalk services
-sudo service tftp start
-sudo service talk start
-sudo service ntalk start
+# Restore tftp service
+if [ -f "/etc/xinetd.d/tftp.bak" ]; then
+  sudo mv /etc/xinetd.d/tftp.bak /etc/xinetd.d/tftp
+  OK "tftp service restored successfully"
+else
+  WARN "tftp service has not been restored as it was not backed up"
+fi
+
+# Restore talk service
+if [ -f "/etc/xinetd.d/talk.bak" ]; then
+  sudo mv /etc/xinetd.d/talk.bak /etc/xinetd.d/talk
+  OK "talk service restored successfully"
+else
+  WARN "talk service has not been restored as it was not backed up"
+fi
+
+# Restore ntalk service
+if [ -f "/etc/xinetd.d/ntalk.bak" ]; then
+  sudo mv /etc/xinetd.d/ntalk.bak /etc/xinetd.d/ntalk
+  OK "ntalk service restored successfully"
+else
+  WARN "ntalk service has not been restored as it was not backed up"
+fi
+
 
 
 

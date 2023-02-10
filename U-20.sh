@@ -13,6 +13,10 @@ EOF
 
 BAR
 
+TMP1=`SCRIPTNAME`.log
+
+>$TMP1 
+
 # vsftpd 구성 파일 백업
 cp /etc/vsftpd.conf /etc/vsftpd.conf.bak
 

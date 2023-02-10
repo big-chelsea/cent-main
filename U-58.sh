@@ -1,10 +1,6 @@
 #!/bin/bash
 
- 
-
 . function.sh
-
- 
 
 BAR
 
@@ -17,23 +13,23 @@ EOF
 
 BAR
 
-
 TMP1=`SCRIPTNAME`.log
 
 > $TMP1 
 
-
-
+# Restore the original state of user accounts
 for user in $(awk -F: '{ if ($3 >= 1000 && $3 <= 60000) print $1}' /etc/passwd); do
-  if [ -d /home/$user ]; then
-    usermod -d /$user $user
-  fi
+if [ ! -d /home/$user ]; then
+usermod -d /tmp/$user $user
+fi
 done
 
-echo "The home directories for user accounts have been restored to their original state."
-
-
-
+# Check if the restoration was successful
+for user in $(awk -F: '{ if ($3 >= 1000 && $3 <= 60000) print $1}' /etc/passwd); do
+if [ ! -d /home/$user ]; then
+OK "The home directory for user $user has not been restored."
+fi
+done
 
 cat $result
 

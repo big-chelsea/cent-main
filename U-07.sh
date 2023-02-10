@@ -14,6 +14,10 @@ EOF
 
 BAR
 
+TMP1=`SCRIPTNAME`.log
+
+>$TMP1 
+
 # Check the owner and permissions of the /etc/passwd file
 file_owner=$(ls -l /etc/passwd | awk '{print $3}')
 file_permission=$(stat -c %a /etc/passwd)

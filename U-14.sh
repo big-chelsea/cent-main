@@ -17,7 +17,9 @@ EOF
 
 BAR
 
+TMP1=`SCRIPTNAME`.log
 
+>$TMP1 
 
 # Backup files
 cp $HOME/.bashrc $HOME/.bashrc.bak

@@ -13,19 +13,23 @@ EOF
 
 BAR
 
-# Backup NFS configuration files
-cp /etc/dfs/dfstab /etc/dfs/dfstab.bak
-cp /etc/exports /etc/exports.bak
+TMP1=`SCRIPTNAME`.log
 
-# 사용하지 않도록 설정된 NFS 시작 스크립트의 이름을 원래 이름으로 변경합니다
-if [ -f "/etc/rc.d/rc2.d/_S60nfs" ]; then
+>$TMP1 
+
+# Restore the NFS service
 sudo mv /etc/rc.d/rc2.d/_S60nfs /etc/rc.d/rc2.d/S60nfs
+
+# Start the NFS processes
+/etc/init.d/nfs start
+
+# Check if the NFS processes are running
+if ps -ef | egrep "nfs|statd|lockd" | awk '{print $2}' &> /dev/null; then
+  OK "NFS service restored successfully."
+else
+  WARN "NFS service could not be restored."
 fi
 
-# NFS 관련 프로세스 시작
-/usr/sbin/nfsd restart
-/usr/sbin/statd restart
-/usr/sbin/lockd restart
 
 cat $result
 

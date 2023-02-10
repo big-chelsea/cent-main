@@ -16,8 +16,9 @@ EOF
 
 BAR
 
+TMP1=`SCRIPTNAME`.log
 
-
+>$TMP1 
 
 if [ -f "/etc/pam.d/login.bak" ]; then
   sudo cp /etc/pam.d/login.bak /etc/pam.d/login

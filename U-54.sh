@@ -1,12 +1,6 @@
 #!/bin/bash
 
- 
-
 . function.sh
-
- 
-
- 
 
 BAR
 
@@ -18,7 +12,6 @@ cat << EOF >> $result
 EOF
 
 BAR
-
 
 TMP1=`SCRIPTNAME`.log
 
@@ -33,9 +26,6 @@ if grep -q "TMOUT=600" /etc/profile; then
 else
   OK "TMOUT was not found in /etc/profile."
 fi
-
-
-
 
 cat $result
 

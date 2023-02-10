@@ -13,6 +13,9 @@ EOF
 
 BAR
 
+TMP1=`SCRIPTNAME`.log
+
+>$TMP1 
 
 # Backup files
 cp /etc/xinetd.d/rlogin /etc/xinetd.d/rlogin.bak

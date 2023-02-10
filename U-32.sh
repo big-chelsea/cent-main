@@ -15,6 +15,10 @@ EOF
 
 BAR
 
+TMP1=`SCRIPTNAME`.log
+
+>$TMP1 
+
 # Sendmail 서비스 재시작
 sudo service sendmail restart
 

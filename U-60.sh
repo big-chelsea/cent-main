@@ -1,10 +1,6 @@
 #!/bin/bash
 
- 
-
 . function.sh
- 
- 
 
 BAR
 
@@ -17,23 +13,26 @@ EOF
 
 BAR
 
- 
 TMP1=`SCRIPTNAME`.log
 
 > $TMP1  
-s
 
-
-# Stop the SSH service
-sudo service stop ssh
-
-# Stop SSHD Services
-sudo service stop sshd
+# Check if SSH is installed
+if [ ! -f /usr/sbin/sshd ]; then
+echo "SSH is not installed."
 
 # Uninstall SSH
 sudo yum remove ssh -y
 
-
+# Check if SSH has been successfully uninstalled
+if [ ! -f /usr/sbin/sshd ]; then
+OK "SSH has been successfully uninstalled."
+else
+WARN "SSH has not been uninstalled."
+fi
+else
+INFO "SSH is already uninstalled."
+fi
 
 cat $result
 

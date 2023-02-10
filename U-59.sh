@@ -17,22 +17,31 @@ TMP1=`SCRIPTNAME`.log
 
 > $TMP1 
 
-# Define the location of backup files
-backup_files_dir="$HOME/hidden_files_backup"
+# Define the list of deleted files and directories
+deleted_files=$(sudo find / -type f -name ".*" ! -path "/run/user/1000/gvfs/*" -mtime -1)
+deleted_dirs=$(sudo find / -type d -name ".*" ! -path "/run/user/1000/gvfs/*" -mtime -1)
 
-# Check if the backup directory exists
-if [ ! -d "$backup_files_dir" ]; then
-  echo "Backup directory does not exist, no files to restore"
-fi
-
-# Restore hidden files and directories
-for file in $(ls "$backup_files_dir"); do
-  cp "$backup_files_dir/$file" "$file"
+# Restore the deleted files and directories
+for file in $deleted_files; do
+sudo cp -p $file /tmp/$(basename $file)
 done
 
-# Remove the backup directory
-sudo rm -rf "$backup_files_dir"
+for dir in $deleted_dirs; do
+sudo cp -rp $dir /tmp/$(basename $dir)
+done
 
+# Check if the restoration was successful
+for file in $deleted_files; do
+if [ ! -f $file ]; then
+OK "The file $file has not been restored."
+fi
+done
+
+for dir in $deleted_dirs; do
+if [ ! -d $dir ]; then
+WARN "The directory $dir has not been restored."
+fi
+done
 
 cat $result
 

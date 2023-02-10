@@ -1,10 +1,6 @@
 #!/bin/bash
 
- 
-
 . function.sh
-
- 
 
 BAR
 
@@ -21,8 +17,6 @@ TMP1=`SCRIPTNAME`.log
 
 > $TMP1
 
-
-
 # Get the original entry of the FTP account from the /etc/passwd
 original_entry=$(grep -w "^ftp" /etc/passwd.bak)
 
@@ -36,10 +30,6 @@ OK "The shell of the FTP account is set to its original value."
 else
 INFO "The shell of the FTP account cannot be set to its original value."
 fi
-
-
-
-
 
 cat $result
 

@@ -13,6 +13,10 @@ EOF
 
 BAR
 
+TMP1=`SCRIPTNAME`.log
+
+>$TMP1 
+
 ORIG_OWNER=$(stat -c '%U' /etc/shadow)
 ORIG_GROUP=$(stat -c '%G' /etc/shadow)
 ORIG_PERM=$(stat -c '%a' /etc/shadow)

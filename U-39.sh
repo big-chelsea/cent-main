@@ -20,8 +20,15 @@ TMP1=`SCRIPTNAME`.log
 # Defining Apache Configuration Files
 file="/etc/httpd/conf/httpd.conf"
 
-# Replace "Options" with "Options FollowSymLinks"
-sed -i 's/Options/Options FollowSymLinks/g' $file
+# Check if the original state has been recovered
+if grep -q "Options FollowSymLinks" $file; then
+  WARN "The original state has not been recovered."
+else
+  # Replace "Options" with "Options FollowSymLinks"
+  sed -i 's/Options/Options FollowSymLinks/g' $file
+  OK "The original state has been restored."
+fi
+
 
 
 

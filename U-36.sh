@@ -17,15 +17,26 @@ TMP1=`SCRIPTNAME`.log
 
 >$TMP1  
 
-
-# Replace [Apache_home], [username], and [groupname] with appropriate original values
+# Define the Apache Configuration File
 APACHE_CONF_FILE=/etc/httpd/conf/httpd.conf
-USERNAME=root
-GROUPNAME=root
 
-# Replace user and group rows with original values
-sed -i "s/User.*/User $USERNAME/g" $APACHE_CONF_FILE
-sed -i "s/Group.*/Group $GROUPNAME/g" $APACHE_CONF_FILE
+# Get the original values of the User and Group rows
+ORIGINAL_USER=$(grep "User" $APACHE_CONF_FILE | awk '{print $2}')
+ORIGINAL_GROUP=$(grep "Group" $APACHE_CONF_FILE | awk '{print $2}')
+
+# Replace the current User and Group rows with the original values
+sed -i "s/User.*/User $ORIGINAL_USER/g" $APACHE_CONF_FILE
+sed -i "s/Group.*/Group $ORIGINAL_GROUP/g" $APACHE_CONF_FILE
+
+# Restart Apache service
+sudo systemctl restart httpd
+
+# Check if Apache service is running
+if systemctl is-active --quiet httpd; then
+  OK "Apache service has been successfully restored."
+else
+  WARN "Apache service has not been restored."
+fi
 
 
 cat $result

@@ -13,6 +13,9 @@ EOF
 
 BAR
 
+TMP1=`SCRIPTNAME`.log
+
+>$TMP1 
 
 # 핑거 서비스 구성 파일의 변경 사항을 제거합니다
 if [ -f /etc/xinetd.d/finger ]; then

@@ -1,47 +1,49 @@
 #!/bin/bash
 
- 
-
 . function.sh
-
-
-TMP2=/tmp/tmp1
-
-> $TMP2
-
- 
 
 BAR
 
-CODE [U-53] 사용자 shell 점검
+CODE [U-52] 동일한 UID 금지
 
 cat << EOF >> $result
-[취약]: 로그인이 필요하지 않은 계정에 /bin/false(nologin) 쉘이 부여되어 있는 경우
-[양호]: 로그인이 필요하지 않은 계정에 /bin/false(nologin) 쉘이 부여되지 않은 경우
+양호: 동일한 UID로 설정된 사용자 계정이 존재하지 않는 경우
+취약: 동일한 UID로 설정된 사용자 계정이 존재하는 경우
 EOF
 
 BAR
-
 
 TMP1=`SCRIPTNAME`.log
 
 > $TMP1
 
+# Check if TMP1 exists
+if [ ! -f $TMP1 ]; then
+  INFO "The original state has not been recovered as the log file does not exist."
+fi
 
-# Read the original shells of the users from the log file
-while read -r line; do
-  user=$(echo "$line" | awk '{print $1}')
-  original_shell=$(echo "$line" | awk '{print $3}')
+# Read the TMP1 file line by line
+while read line; do
+  # Split line by space
+  arr=($line)
 
-  # Restore the original shell of the user
-  sudo usermod -s "$original_shell" "$user"
-  INFO "Restored user $user shell to $original_shell"
-done < "$TMP1"
+  # Get the user and the original UID
+  user=${arr[0]}
+  orig_uid=${arr[2]}
 
+  # Check if the user still exists
+  if id "$user" > /dev/null 2>&1; then
+    # Change the user's UID back to the original value
+    sudo usermod -u $orig_uid $user
 
+    # Print results
+    INFO "UID of $user restored back to $orig_uid"
+  fi
+done < $TMP1
 
+# Remove TMP1
+sudo rm $TMP1
 
- 
 
 cat $result
 

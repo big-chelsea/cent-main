@@ -13,6 +13,10 @@ EOF
 
 BAR
 
+TMP1=`SCRIPTNAME`.log
+
+>$TMP1 
+
 # Backup files
 cp /etc/xinetd.d/finger /etc/xinetd.d/finger.bak
 

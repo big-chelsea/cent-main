@@ -1,10 +1,7 @@
 #!/bin/bash
 
- 
-
 . function.sh
  
-
 BAR
 
 CODE [U-55] hosts.lpd 파일 소유자 및 권한 설정
@@ -16,20 +13,16 @@ EOF
 
 BAR
 
- 
 TMP1=`SCRIPTNAME`.log
 
 > $TMP1
 
-
-
-sudo cp /etc/hosts.lpd.bak /etc/hosts.lpd
-sudo chown root:root /etc/hosts.lpd
-sudo chmod 600 /etc/hosts.lpd
-
-echo "The file has been restored to its original state."
-
-
+if [ -f /etc/hosts.lpd.bak ]; then
+  sudo cp /etc/hosts.lpd.bak /etc/hosts.lpd
+  OK "The original state of the file has been restored."
+else
+  WARN "The backup file could not be found. The original state of the file could not be restored."
+fi
 
 cat $result
 

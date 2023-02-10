@@ -14,6 +14,10 @@ EOF
 
 BAR
 
+TMP1=`SCRIPTNAME`.log
+
+>$TMP1 
+
 # su 명령에서 SUID 비트 제거
 sudo chmod u-s $(which su)
 

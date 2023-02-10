@@ -15,15 +15,26 @@ EOF
 
 BAR
 
+TMP1=`SCRIPTNAME`.log
 
-ORIG_OWNER=$(stat -c "%U:%G" /etc/services)
-ORIG_PERMS=$(stat -c "%a" /etc/services)
+>$TMP1 
 
-# Restore the original owner of the file
-sudo chown $ORIG_OWNER /etc/services
+ORIG_OWNER=$(stat -c '%U' /etc/services)
+ORIG_GROUP=$(stat -c '%G' /etc/services)
+ORIG_PERM=$(stat -c '%a' /etc/services)
 
-# Restore the original permissions of the file
-sudo chmod $ORIG_PERMS /etc/services
+# Change the owner of the /etc/services file back to the original owner
+sudo chown $ORIG_OWNER:$ORIG_GROUP /etc/services
+
+# Set the file permissions back to the original permissions
+sudo chmod $ORIG_PERM /etc/services
+
+# Check if the changes were successful and print a message
+if [ "$ORIG_OWNER" == "$(stat -c '%U' /etc/services)" ] && [ "$ORIG_GROUP" == "$(stat -c '%G' /etc/services)" ] && [ "$ORIG_PERM" == "$(stat -c '%a' /etc/services)" ]; then
+  OK "The original state of /etc/services has been successfully restored."
+else
+  WARN "The original state of /etc/services could not be restored."
+fi
 
 
 

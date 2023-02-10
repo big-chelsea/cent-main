@@ -1,10 +1,6 @@
 #!/bin/bash
 
- 
-
 . function.sh
-
- 
 
 BAR
 
@@ -17,27 +13,33 @@ EOF
 
 BAR
 
-
 TMP1=`SCRIPTNAME`.log
 
 > $TMP1  
 
+# Read /etc/passwd file and extract home directory
+output=$(cat /etc/passwd | awk -F ':' '{print $6}')
 
+# Split the output into arrays
+arr=($output)
 
-for user in $(awk -F: '{ if ($3 >= 1000 && $3 <= 60000) print $1}' /etc/passwd); do
-  if [ -d /home/$user ]; then
-    usermod -d /$user $user
-  fi
+# Backup original state of home directories
+for line in "${arr[@]}"
+do
+sudo cp -Rp $line $line.bak
 done
 
-echo "The home directories for user accounts have been restored to their original state."
-
-
-
-
-
-
-
+# Repeat the array to restore original state of home directories
+for line in "${arr[@]}"
+do
+if [ -d "$line.bak" ]; then
+sudo rm -rf $line
+sudo cp -Rp $line.bak $line
+OK "Original state of $line has been successfully restored."
+else
+WARN "The original state of $line could not be restored."
+fi
+done
 
 cat $result
 

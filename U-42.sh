@@ -17,17 +17,31 @@ TMP1=`SCRIPTNAME`.log
 
 >$TMP1  
 
-# 백업 파일 경로 설정
-backup_file="/var/log/patch.log.backup"
+# Set log file path
+log_file="/var/log/patch.log"
 
-# 백업 파일 경로 설정
-sudo cp $log_file $backup_file
+# Verify that the /var/log/patch.log file exists
+if [ -e $log_file ]; then
+  # Check if the log file contains information about installed patches
+  if grep -q "Patches installed" $log_file; then
+    # Get the list of installed patches
+    installed_patches=`grep "Patches installed" $log_file | awk '{print $3}'`
+    
+    # Uninstall the patches
+    sudo yum remove $installed_patches
 
-# 원래 상태로 복구
-sudo yum downgrade $(grep "Patches installed at" $backup_file | awk '{print $4, $5, $6}')
-
-# 백업 파일 제거
-sudo rm $backup_file
+    # Check if the patches were successfully removed
+    if [ $? -eq 0 ]; then
+      OK "Patches were successfully uninstalled."
+    else
+      WARN "Unable to uninstall the patches."
+    fi
+  else
+    OK "No patches were installed."
+  fi
+else
+  WARN "$log_file does not exist."
+fi
 
 cat $result
 

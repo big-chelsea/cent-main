@@ -17,19 +17,24 @@ TMP1=`SCRIPTNAME`.log
 
 >$TMP1  
 
-# Backup log files
-cp /var/log/wtmp /var/log/btmp /var/log/lastlog /var/log/xferlog ~/backup/logs/
+# Define the original state variables
+ORIG_UTMP="/var/log/utmp.original"
+ORIG_XFERLOG="/var/log/xferlog.original"
 
-# Backup configuration files
-cp function.sh ~/backup/config/
+# Check if the original state exists
+if [ -e "$ORIG_UTMP" ] && [ -e "$ORIG_XFERLOG" ]; then
+  # Restore the original state of /var/log/utmp
+  rm -f /var/log/utmp
+  mv "$ORIG_UTMP" /var/log/utmp
 
-# If there is a problem after running the script, restore the log files and configuration files from the backup directory
-cp ~/backup/logs/* /var/log/
-cp ~/backup/config/function.sh .
+  # Restore the original state of /var/log/xferlog
+  rm -f /var/log/xferlog
+  mv "$ORIG_XFERLOG" /var/log/xferlog
 
-
-
-
+  OK "Original state restored."
+else
+  WARN "Original state not found. Nothing to restore."
+fi
 
 cat $result
 

@@ -17,10 +17,6 @@ TMP1=`SCRIPTNAME`.log
 
 >$TMP1  
 
-
-
-#!/bin/bash
-
 # Get the list of files with invalid owners
 invalid_owner_files=$(find / -nouser 2>/dev/null)
 

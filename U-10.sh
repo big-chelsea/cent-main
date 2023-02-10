@@ -13,6 +13,10 @@ EOF
 
 BAR
 
+TMP1=`SCRIPTNAME`.log
+
+>$TMP1 
+
 # Check if the file owner is root and permission is 600
 if [ "$(stat -c %U /etc/xinetd.conf)" != "root" ] || [ "$(stat -c %a /etc/xinetd.conf)" != "600" ]; then
   # Store the original state of the file

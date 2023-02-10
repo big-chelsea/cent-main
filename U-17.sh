@@ -20,18 +20,25 @@ TMP1=`SCRIPTNAME`.log
 
 >$TMP1  
 
+# Restore the original owner of /etc/hosts.equiv
+sudo chown [original_owner] /etc/hosts.equiv
 
+# Restore the original permissions of /etc/hosts.equiv
+sudo chmod [original_permissions] /etc/hosts.equiv
 
-# Check if TMP1 file exists
-if [ -f "$TMP1" ]; then
-  # Restore the owner and permissions of /etc/hosts.equiv
-  sudo chown `stat -c %U /etc/hosts.equiv` /etc/hosts.equiv
-  sudo chmod `stat -c %a /etc/hosts.equiv` /etc/hosts.equiv
+# Restore the original owner of $HOME/.rhosts
+sudo chown [original_owner] $HOME/.rhosts
 
-  # Restore the owner and permissions of $HOME/.rhosts
-  sudo chown `stat -c %U $HOME/.rhosts` $HOME/.rhosts
-  sudo chmod `stat -c %a $HOME/.rhosts` $HOME/.rhosts
+# Restore the original permissions of $HOME/.rhosts
+sudo chmod [original_permissions] $HOME/.rhosts
+
+# Check if the restore was successful
+if [ -f /etc/hosts.equiv ] && [ -f $HOME/.rhosts ]; then
+  OK "Successfully restored the original state of /etc/hosts.equiv and $HOME/.rhosts"
+else
+  WARN "Restore failed"
 fi
+
 
 
 
