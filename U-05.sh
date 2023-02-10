@@ -17,33 +17,22 @@ TMP1=`SCRIPTNAME`.log
 
 >$TMP1  
 
-# PATH의 현재 값을 가져옴
-path=$(echo $PATH)
+# Restore original /etc/profile file
+cp /etc/profile.bak /etc/profile
 
-# 시작 부분에 "." 또는 ":"가 있는지 확인
-if [[ "${path:0:1}" == "." || "${path:0:1}" == ":" ]]; then
-  # 첫 번째 문자("." 또는 ":")를 처음부터 제거합니다
-  path="${path:1}"
+# Restore original ~/.profile file
+cp ~/.profile.bak ~/.profile
+
+# Reload environment variables
+source ~/.profile
+source /etc/profile
+
+# Check if PATH environment variable still contains "."
+if [[ "$PATH" == *"."* ]]; then
+  OK "Problem has not been recovered. PATH environment variable still contains '.'"
+else
+  WARN "Problem has been recovered. PATH environment variable no longer contains '.'"
 fi
-
-# 경로를 배열로 분할
-path_array=($(echo $path | tr ":" "\n"))
-
-# 배열에서 "."의 색인을 찾음
-index=0
-for i in "${!path_array[@]}"; do
-  if [[ "${path_array[i]}" == "." ]]; then
-    index=$i
-    break
-  fi
-done
-
-# 배열에서 "."를 제거하고 끝에 추가
-unset 'path_array[index]'
-path_array+=(".")
-
-# 배열을 ":" 구분 기호를 사용하여 문자열로 다시 조인
-new_path=$(IFS=:; echo "${path_array[*]}")
 
 
 

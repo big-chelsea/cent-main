@@ -12,14 +12,23 @@ cat << EOF >> $result
 EOF
 
 BAR
-# Backup files
-cp /etc/xinetd.conf /etc/xinetd.conf.bak
 
-# 파일 소유자를 "root" 사용자와 "root" 그룹으로 변경
-sudo chown root:root /etc/xinetd.conf
+# Check if the file owner is root and permission is 600
+if [ "$(stat -c %U /etc/xinetd.conf)" != "root" ] || [ "$(stat -c %a /etc/xinetd.conf)" != "600" ]; then
+  # Store the original state of the file
+  original_owner=$(stat -c %U /etc/xinetd.conf)
+  original_group=$(stat -c %G /etc/xinetd.conf)
+  original_permission=$(stat -c %a /etc/xinetd.conf)
 
-# 파일의 권한을 600으로 설정
-sudo chmod 600 /etc/xinetd.conf
+  # Restore the original state of the file
+  sudo chown $original_owner:$original_group /etc/xinetd.conf
+  sudo chmod $original_permission /etc/xinetd.conf
+
+  OK "The original state of the file /etc/xinetd.conf has been restored."
+else
+  WARN "The file /etc/xinetd.conf has not been recovered."
+fi
+
 
 cat $result
 

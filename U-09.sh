@@ -17,14 +17,19 @@ TMP1=`SCRIPTNAME`.log
 
 >$TMP1  
 
-ORIG_OWNER=$(stat -c "%U:%G" /etc/hosts)
-ORIG_PERMS=$(stat -c "%a" /etc/hosts)
+ORIGINAL_OWNER=$(stat -c '%U' /etc/hosts)
+ORIGINAL_GROUP=$(stat -c '%G' /etc/hosts)
+ORIGINAL_PERMISSIONS=$(stat -c '%a' /etc/hosts)
 
-# Restore the original owner of the file
-sudo chown $ORIG_OWNER /etc/hosts
+sudo chown $ORIGINAL_OWNER:$ORIGINAL_GROUP /etc/hosts
+sudo chmod $ORIGINAL_PERMISSIONS /etc/hosts
 
-# Restore the original permissions of the file
-sudo chmod $ORIG_PERMS /etc/hosts
+if [ $(stat -c '%U' /etc/hosts) == "$ORIGINAL_OWNER" ] && [ $(stat -c '%G' /etc/hosts) == "$ORIGINAL_GROUP" ] && [ $(stat -c '%a' /etc/hosts) == "$ORIGINAL_PERMISSIONS" ]; then
+  OK "The original state of the /etc/hosts file has been restored."
+else
+  WARN "The original state of the /etc/hosts file could not be restored."
+fi
+
 
 
 
