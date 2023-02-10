@@ -10,11 +10,8 @@ BAR
 CODE [U-61] ftp 서비스 확인
 
 cat << EOF >> $result
-
 [양호]: FTP 서비스가 비활성화 되어 있는 경우
-
 [취약]: FTP 서비스가 활성화 되어 있는 경우
-
 EOF
 
 BAR
@@ -42,4 +39,4 @@ sudo /etc/rc.d/init.d/proftp start
 
 cat $result
 
-echo ; echo 
+echo ; echo
