@@ -20,11 +20,13 @@ TMP1=`SCRIPTNAME`.log
 
 >$TMP1  
 
-# Restore source files
-cp /etc/pam.d/system-auth.bak /etc/pam.d/system-auth
+# Restore the original state
+if cp /etc/pam.d/common-auth.bak /etc/pam.d/common-auth; then
+    OK "The original state has been restored."
+else
+    WARN "The original state could not be restored."
+fi
 
-# Remove backup file
-rm /etc/pam.d/system-auth.bak
 
 
 cat $result
