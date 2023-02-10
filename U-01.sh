@@ -20,26 +20,27 @@ BAR
 
 
 if [ -f "/etc/pam.d/login.bak" ]; then
-  sudo mv /etc/pam.d/login.bak /etc/pam.d/login
+  sudo cp /etc/pam.d/login.bak /etc/pam.d/login
   if [ $? -eq 0 ]; then
-    echo "/etc/pam.d/login을 원래 상태로 복원했습니다."
+    echo "Successfully restored /etc/pam.d/login to its original state."
   else
-    echo "/etc/pam.d/login을 원래 상태로 복원하지 못했습니다."
+    echo "Failed to restore /etc/pam.d/login to its original state."
   fi
 else
-  echo "/etc/sla.d/sla.d/sla.bak을 찾을 수 없습니다. 원래 상태가 복구되지 않았습니다."
+  echo "/etc/pam.d/login.bak not found, original state has not been recovered."
 fi
 
 if [ -f "/etc/security.bak" ]; then
-  sudo mv /etc/security.bak /etc/security
+  sudo cp /etc/security.bak /etc/security
   if [ $? -eq 0 ]; then
-    echo "/etc/security를 원래 상태로 복원했습니다."
+    echo "Successfully restored /etc/security to its original state."
   else
-    echo "/etc/security를 원래 상태로 복원하지 못했습니다."
+    echo "Failed to restore /etc/security to its original state."
   fi
 else
-  echo "/etc/security.bak을 찾을 수 없습니다. 원래 상태가 복구되지 않았습니다."
+  echo "/etc/security.bak not found, original state has not been recovered."
 fi
+
 
 
 cat $result
