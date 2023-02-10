@@ -25,7 +25,7 @@ AUTH_FILE="/etc/pam.d/system-auth"
 
 # Restore /etc/login.defs to its original state
 if [ -f "$DEF_FILE.bak" ]; then
-  sudo mv "$DEF_FILE.bak" "$DEF_FILE"
+  sudo cp "$DEF_FILE.bak" "$DEF_FILE"
   OK "The original state of $DEF_FILE has been restored."
 else
   WARN "$DEF_FILE.bak not found. $DEF_FILE has not been restored."
@@ -33,7 +33,7 @@ fi
 
 # Restore /etc/pam.d/system-auth to its original state
 if [ -f "$AUTH_FILE.bak" ]; then
-  sudo mv "$AUTH_FILE.bak" "$AUTH_FILE"
+  sudo cp "$AUTH_FILE.bak" "$AUTH_FILE"
   OK "The original state of $AUTH_FILE has been restored."
 else
   WARN "$AUTH_FILE.bak not found. $AUTH_FILE has not been restored."
