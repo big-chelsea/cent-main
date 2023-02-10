@@ -20,17 +20,25 @@ TMP1=`SCRIPTNAME`.log
 
 >$TMP1  
 
-# Restore login.defs files
-cp /etc/login.defs.bak /etc/login.defs
+DEF_FILE="/etc/login.defs"
+AUTH_FILE="/etc/pam.d/system-auth"
 
-# Restore source files
-cp /etc/pam.d/system-auth.bak /etc/pam.d/system-auth
+# Restore /etc/login.defs to its original state
+if [ -f "$DEF_FILE.bak" ]; then
+  sudo mv "$DEF_FILE.bak" "$DEF_FILE"
+  echo "The original state of $DEF_FILE has been restored."
+else
+  echo "$DEF_FILE.bak not found. $DEF_FILE has not been restored."
+fi
 
-# Remove backup file
-rm /etc/pam.d/system-auth.bak
+# Restore /etc/pam.d/system-auth to its original state
+if [ -f "$AUTH_FILE.bak" ]; then
+  sudo mv "$AUTH_FILE.bak" "$AUTH_FILE"
+  echo "The original state of $AUTH_FILE has been restored."
+else
+  echo "$AUTH_FILE.bak not found. $AUTH_FILE has not been restored."
+fi
 
-# Remove backup file
-rm /etc/login.defs.bak
 
 cat $result
 
