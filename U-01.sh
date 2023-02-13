@@ -20,26 +20,25 @@ TMP1=`SCRIPTNAME`.log
 
 >$TMP1 
 
-if [ -f "/etc/pam.d/login.bak" ]; then
-  sudo cp /etc/pam.d/login.bak /etc/pam.d/login
-  if [ $? -eq 0 ]; then
-    OK "Successfully restored /etc/pam.d/login to its original state."
-  else
-    WARN "Failed to restore /etc/pam.d/login to its original state."
-  fi
-else
-  echo "/etc/pam.d/login.bak not found, original state has not been recovered."
-fi
+# Backup the original /etc/securety and /etc/pam.d/login files
+cp /etc/securety /etc/securety.bak
+cp /etc/pam.d/login /etc/pam.d/login.bak
 
-if [ -f "/etc/security.bak" ]; then
-  sudo cp /etc/security.bak /etc/security
-  if [ $? -eq 0 ]; then
-    OK "Successfully restored /etc/security to its original state."
-  else
-    WARN "Failed to restore /etc/security to its original state."
-  fi
+# Check if the original files were modified
+diff /etc/securety /etc/securety.bak > /dev/null
+securety_diff=$?
+
+diff /etc/pam.d/login /etc/pam.d/login.bak > /dev/null
+login_diff=$?
+
+if [ $securety_diff -ne 0 ] || [ $login_diff -ne 0 ]; then
+  INFO "Recovering original state of /etc/securety and /etc/pam.d/login files..."
+  # Replace the modified files with the backup files
+  cp /etc/securety.bak /etc/securety
+  cp /etc/pam.d/login.bak /etc/pam.d/login
+  OK "Original state recovered."
 else
-  echo "/etc/security.bak not found, original state has not been recovered."
+  WARN "Original state was not recovered."
 fi
 
 
