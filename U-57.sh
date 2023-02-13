@@ -17,29 +17,52 @@ TMP1=`SCRIPTNAME`.log
 
 > $TMP1  
 
-# Read /etc/passwd file and extract home directory
-output=$(cat /etc/passwd | awk -F ':' '{print $6}')
+# Function to restore the original state
+restore_original_state() {
+  # Read /etc/passwd file and extract home directory
+  output=$(cat /etc/passwd | awk -F ':' '{print $6}')
 
-# Split the output into arrays
+  # Split the output into arrays
+  arr=($output)
+
+  # Repeat the array to restore each home directory to its original state
+  for line in "${arr[@]}"
+  do
+    original_permissions=$(stat -c "%a" $line)
+    original_owner=$(stat -c "%U" $line)
+    original_group=$(stat -c "%G" $line)
+    sudo chown $original_owner:$original_group $line
+    sudo chmod $original_permissions $line
+  done
+}
+
+# Check if the script was executed with root privileges
+if [ "$EUID" -ne 0 ]; then
+  echo "Please run the script as root or with sudo."
+fi
+
+# Try to restore the original state
+restore_original_state
+
+# Check if the restoration was successful
+output=$(cat /etc/passwd | awk -F ':' '{print $6}')
 arr=($output)
 
-# Backup original state of home directories
 for line in "${arr[@]}"
 do
-sudo cp -Rp $line $line.bak
+  permissions=$(ls -ld $line | awk '{print $1}')
+  owner=$(ls -ld $line | awk '{print $3}')
+  group=$(ls -ld $line | awk '{print $4}')
+  original_permissions=$(stat -c "%a" $line)
+  original_owner=$(stat -c "%U" $line)
+  original_group=$(stat -c "%G" $line)
+  if [[ $permissions != $original_permissions ]] || [[ $owner != $original_owner ]] || [[ $group != $original_group ]]; then
+    echo "Recovery failed: $line"
+  fi
 done
 
-# Repeat the array to restore original state of home directories
-for line in "${arr[@]}"
-do
-if [ -d "$line.bak" ]; then
-sudo rm -rf $line
-sudo cp -Rp $line.bak $line
-OK "Original state of $line has been successfully restored."
-else
-WARN "The original state of $line could not be restored."
-fi
-done
+echo "Recovery successful."
+
 
 cat $result
 
