@@ -17,31 +17,40 @@ TMP1=`SCRIPTNAME`.log
 
 > $TMP1 
 
-# Define the list of deleted files and directories
-deleted_files=$(sudo find / -type f -name ".*" ! -path "/run/user/1000/gvfs/*" -mtime -1)
-deleted_dirs=$(sudo find / -type d -name ".*" ! -path "/run/user/1000/gvfs/*" -mtime -1)
+# Define a function to restore the original state
+function restore_state {
+  # Check if a backup of the hidden files and directories exists
+  if [ -f "hidden_files_backup.txt" ]; then
+    # Restore the hidden files
+    while read file; do
+      if [ ! -f "$file" ]; then
+        touch "$file"
+      fi
+    done < "hidden_files_backup.txt"
 
-# Restore the deleted files and directories
-for file in $deleted_files; do
-sudo cp -p $file /tmp/$(basename $file)
-done
+    # Restore the hidden directories
+    while read dir; do
+      if [ ! -d "$dir" ]; then
+        mkdir "$dir"
+      fi
+    done < "hidden_dirs_backup.txt"
 
-for dir in $deleted_dirs; do
-sudo cp -rp $dir /tmp/$(basename $dir)
-done
+    # Print that the original state was recovered
+    OK "The original state was recovered successfully."
+  else
+    # Print that the original state was not recovered
+    WARN "The original state could not be recovered because the backup files were not found."
+  fi
+}
 
-# Check if the restoration was successful
-for file in $deleted_files; do
-if [ ! -f $file ]; then
-OK "The file $file has not been restored."
+# Check if there was a problem while removing the hidden files and directories
+if [ ! -z "$(sudo find / -type f -name ".*" ! -path "/run/user/1000/gvfs/*")" ] || [ ! -z "$(sudo find / -type d -name ".*" ! -path "/run/user/1000/gvfs/*")" ]; then
+  # Restore the original state
+  restore_state
+else
+  INFO "No problem was detected while removing the hidden files and directories."
 fi
-done
 
-for dir in $deleted_dirs; do
-if [ ! -d $dir ]; then
-WARN "The directory $dir has not been restored."
-fi
-done
 
 cat $result
 

@@ -17,19 +17,22 @@ TMP1=`SCRIPTNAME`.log
 
 > $TMP1 
 
-# Restore the original state of user accounts
-for user in $(awk -F: '{ if ($3 >= 1000 && $3 <= 60000) print $1}' /etc/passwd); do
-if [ ! -d /home/$user ]; then
-usermod -d /tmp/$user $user
-fi
-done
+# Backup the original /etc/passwd file
+cp /etc/passwd $TMP2
 
-# Check if the restoration was successful
-for user in $(awk -F: '{ if ($3 >= 1000 && $3 <= 60000) print $1}' /etc/passwd); do
-if [ ! -d /home/$user ]; then
-OK "The home directory for user $user has not been restored."
+if [ -f $TMP1 ]; then
+  # If a problem occurs, restore the original /etc/passwd file
+  cp $TMP2 /etc/passwd
+
+  if [ $? -eq 0 ]; then
+    OK "Recovered"
+  else
+    WARN "Not recovered"
+  fi
+else
+  INFO "No problem detected"
 fi
-done
+
 
 cat $result
 

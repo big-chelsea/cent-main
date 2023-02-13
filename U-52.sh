@@ -17,32 +17,50 @@ TMP1=`SCRIPTNAME`.log
 
 > $TMP1
 
-# Check if TMP1 exists
-if [ ! -f $TMP1 ]; then
-  INFO "The original state has not been recovered as the log file does not exist."
+# Files containing user accounts
+PASSWD="/etc/passwd"
+
+# Temporary file to store the original UIDs of users
+TMP_ORIGINAL=$(mktemp)
+
+# Save the original UIDs of users to a temporary file
+awk -F: '{print $1 ":" $3}' "$PASSWD" > $TMP_ORIGINAL
+
+# Check if the previous script has been executed
+if [ -f $TMP1 ]; then
+# Temporary file to store the changed UIDs of users
+TMP_CHANGED=$(mktemp)
+
+# Save the changed UIDs of users to a temporary file
+awk -F: '{print $1 ":" $3}' "$PASSWD" > $TMP_CHANGED
+
+# Store the changed UIDs of users in an array
+CHANGED_UIDS=($(cut -d: -f2 $TMP_CHANGED))
+
+# Loop through the changed UIDs of users
+for uid in "${CHANGED_UID[@]}"; do
+# Get the user with the changed UID
+CHANGED_USER=$(grep ":$uid" $TMP_CHANGED | cut -d: -f1)
+
+# Get the original UID of the user
+ORIGINAL_UID=$(grep "^$CHANGED_USER:" $TMP_ORIGINAL | awk -F: '{print $2}')
+
+# Check if the UID of the user has been changed
+if [ $uid -ne $ORIGINAL_UID ]; then
+# Change the UID of the user back to its original value
+usermod -u $ORIGINAL_UID $CHANGED_USER
+
+# Print Results
+INFO "$CHANGED_USER's UID restored to $ORIGINAL_UID"
 fi
+done
 
-# Read the TMP1 file line by line
-while read line; do
-  # Split line by space
-  arr=($line)
+# Remove temporary files
+rm $TMP_ORIGINAL $TMP_CHANGED
 
-  # Get the user and the original UID
-  user=${arr[0]}
-  orig_uid=${arr[2]}
-
-  # Check if the user still exists
-  if id "$user" > /dev/null 2>&1; then
-    # Change the user's UID back to the original value
-    sudo usermod -u $orig_uid $user
-
-    # Print results
-    INFO "UID of $user restored back to $orig_uid"
-  fi
-done < $TMP1
-
-# Remove TMP1
-sudo rm $TMP1
+else
+INFO "Previous script has not been executed."
+fi
 
 
 cat $result

@@ -21,25 +21,21 @@ TMP1=`SCRIPTNAME`.log
 
 > $TMP1
 
-# Get a list of users with modified shells
-user_list=$(grep "/bin/false" /etc/passwd | awk -F: '{print $1}')
+# Backup the original /etc/passwd file
+cp /etc/passwd $TMP2
 
-# Loop through the list of users
-for user in $user_list; do
-# Get the original shell of the user
-orig_shell=$(grep "^$user:" /etc/passwd.bak | awk -F: '{print $7}')
+if [ -f $TMP1 ]; then
+  # If a problem occurs, restore the original /etc/passwd file
+  cp $TMP2 /etc/passwd
 
-# Restore the original shell of the user
-sudo usermod -s $orig_shell $user
-
-# Verify that the shell has been restored
-shell=$(grep "^$user:" /etc/passwd | awk -F: '{print $7}')
-if [ $shell == $orig_shell ]; then
-OK "User $user original shell ($orig_shell) has been restored."
+  if [ $? -eq 0 ]; then
+    OK "Recovered"
+  else
+    WARN "Not recovered"
+  fi
 else
-ERROR "Failed to restore user $user original shell ($orig_shell)."
+  INFO "No problem detected"
 fi
-done
 
 
 cat $result

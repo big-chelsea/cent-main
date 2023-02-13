@@ -21,15 +21,19 @@ TMP1=`SCRIPTNAME`.log
 
 > $TMP1
 
+# Restore original permissions for /usr/bin/at
+chmod 755 /usr/bin/at
 
-sudo chmod 2755 /usr/bin/at
+# Restore original owner and permissions for /etc/at.deny
+chown root:root /etc/at.deny
+chmod 644 /etc/at.deny
 
-sudo chown root:root /etc/at.deny
-
-sudo chmod 644 /etc/at.deny
-
-
-
+# Check if restoration was successful
+if [[ "$(stat -c %a /usr/bin/at)" == "755" && "$(stat -c %U /usr/bin/at)" == "root" && "$(stat -c %a /etc/at.deny)" == "644" && "$(stat -c %U /etc/at.deny)" == "root" ]]; then
+  OK "Restoration was successful."
+else
+  WARN "Restoration was not successful."
+fi
 
 cat $result
 

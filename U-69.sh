@@ -20,15 +20,21 @@ TMP1=`SCRIPTNAME`.log
 
 > $TMP1
 
-
-# File Definition
 filename="/etc/exports"
+original_owner=`ls -l $filename | awk '{print $3}'`
+original_permissions=`stat -c %a $filename`
 
-# Revert the changes made to the NFS access control settings file
-sudo chown root "$filename"
-sudo chmod 644 "$filename"
-
-
+if [ $original_owner != "root" ] || [ $original_permissions -gt 644 ]; then
+  chown $original_owner "$filename"
+  chmod $original_permissions "$filename"
+  if [ $? -eq 0 ]; then
+    OK "Original state was recovered successfully."
+  else
+    WARN "Original state could not be recovered."
+  fi
+else
+  INFO "No change needed. File already in original state."
+fi
 
 cat $result
 

@@ -21,12 +21,18 @@ TMP1=`SCRIPTNAME`.log
 
 > $TMP1
 
-# 송신 메일 초기화 스크립트 복원
-mv /etc/rc2.d/S88sendmail_bak /etc/rc2.d/S88sendmail
+# Check if sendmail init script is backed up
+if [ -e "/etc/rc2.d/S88sendmail_bak" ]; then
+  # Move sendmail init script back to /etc/rc2.d
+  mv /etc/rc2.d/S88sendmail_bak /etc/rc2.d/S88sendmail
 
-# 메일 보내기 서비스 시작
-service sendmail restart
-    
+  # Start the outgoing mail process
+  /etc/rc2.d/S88sendmail start
+
+  INFO "The original state of the SMTP service was recovered."
+else
+  WARN "The original state of the SMTP service was not found. Restoration failed."
+fi
 
 cat $result
 
