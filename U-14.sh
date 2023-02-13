@@ -21,22 +21,28 @@ TMP1=`SCRIPTNAME`.log
 
 >$TMP1 
 
-# Backup files
-cp $HOME/.bashrc $HOME/.bashrc.bak
-cp $HOME/.bash_profile $HOME/.bash_profile.bak
-cp $HOME/.bash_aliases $HOME/.bash_aliases.bak
-
-files=( "$HOME/.bashrc" "$HOME/.bash_profile" "$HOME/.bash_aliases" )
+files=(".profile" ".kshrc" ".cshrc" ".bashrc" ".bash_profile" ".login" ".exrc" ".netrc")
 
 for file in "${files[@]}"; do
-  if [ -e "$file" ]; then
-    chmod o-w "$file"
-    if [ $? -eq 0 ]; then
-      OK "$file 에서 다른 사용자에 대한 쓰기 권한이 제거되었습니다."
-    else
-      WARN "$file 에서 다른 사용자에 대한 쓰기 권한을 제거하지 못했습니다."
-    fi
-  fi
+if [ ! -f $file ]; then
+INFO "$file does not exist."
+continue
+fi
+
+original_owner=$(stat -c '%U' $file)
+original_permission=$(stat -c '%a' $file)
+
+current_owner=$(stat -c '%U' $file)
+current_permission=$(stat -c '%a' $file)
+
+if [ "$original_owner" != "$current_owner" ] || [ "$original_permission" != "$current_permission" ]; then
+echo "Recovering $file to its original state..."
+chown $original_owner $file
+chmod $original_permission $file
+OK "$file was recovered."
+else
+WARN "$file was not recovered."
+fi
 done
 
 

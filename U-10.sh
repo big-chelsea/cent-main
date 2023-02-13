@@ -25,8 +25,8 @@ if [ "$(stat -c %U /etc/xinetd.conf)" != "root" ] || [ "$(stat -c %a /etc/xinetd
   original_permission=$(stat -c %a /etc/xinetd.conf)
 
   # Restore the original state of the file
-  sudo chown $original_owner:$original_group /etc/xinetd.conf
-  sudo chmod $original_permission /etc/xinetd.conf
+  sudo chown adiosl /etc/xinetd.conf
+  sudo chmod 644 /etc/xinetd.conf
 
   OK "The original state of the file /etc/xinetd.conf has been restored."
 else
